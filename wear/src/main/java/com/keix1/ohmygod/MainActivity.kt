@@ -51,7 +51,6 @@ class MainActivity : WearableActivity(), SensorEventListener {
         val soundUri = RingtoneManager.getActualDefaultRingtoneUri(this, ringType)
         val ringtone = RingtoneManager.getRingtone(applicationContext, soundUri)
 
-//        val kamiButton = findViewById(R.id.kamiButton) as ImageButton
         val kamiButton = ImageButton(this)
         kamiButton.setOnClickListener{ ringtone.play() }
 
