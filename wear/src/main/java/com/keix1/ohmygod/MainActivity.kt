@@ -13,16 +13,16 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.support.wearable.activity.WearableActivity
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlin.concurrent.thread
 
 
 class MainActivity : WearableActivity(), SensorEventListener {
 
-    @BindView(R.id.text)
-    lateinit var textView: TextView
     lateinit var arrayAcceleration: Array<Float>
     lateinit var lock: PowerManager.WakeLock
     private var gestureFlag1: Boolean? = null
@@ -42,7 +42,6 @@ class MainActivity : WearableActivity(), SensorEventListener {
         setAmbientEnabled()
 
         ButterKnife.bind(this)
-        textView.text = "hogehoge"
         arrayAcceleration = arrayOf(0.0f,0.0f,0.0f)
         gestureFlag1 = false
         gestureFlag2 = false
@@ -52,10 +51,11 @@ class MainActivity : WearableActivity(), SensorEventListener {
         val soundUri = RingtoneManager.getActualDefaultRingtoneUri(this, ringType)
         val ringtone = RingtoneManager.getRingtone(applicationContext, soundUri)
 
-        val button = findViewById(R.id.button) as Button
-        button.setOnClickListener{ ringtone.play() }
+//        val kamiButton = findViewById(R.id.kamiButton) as ImageButton
+        val kamiButton = ImageButton(this)
+        kamiButton.setOnClickListener{ ringtone.play() }
 
-        var pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         lock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My tag")
         lock.acquire()
         mp = MediaPlayer.create(this, R.raw.mikami)
@@ -114,12 +114,9 @@ class MainActivity : WearableActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        textView.text = event!!.values.zip("XYZ".toList()).fold("") { acc, pair ->
-            "$acc${pair.second}: ${pair.first}\n"
-        }
-        arrayAcceleration[0] = event.values[0]
-        arrayAcceleration[1] = event.values[1]
-        arrayAcceleration[2] = event.values[2]
+        arrayAcceleration[0] = event!!.values[0]
+        arrayAcceleration[1] = event!!.values[1]
+        arrayAcceleration[2] = event!!.values[2]
 
         gesture()
     }
