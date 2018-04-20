@@ -70,7 +70,7 @@ class MainActivity : WearableActivity(), SensorEventListener {
     }
 
     private fun gesture() {
-        if(arrayAcceleration[0] < -7 && -12 < arrayAcceleration[1] && arrayAcceleration[1] < -8 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
+        if(arrayAcceleration[0] < -5 && -12 < arrayAcceleration[1] && arrayAcceleration[1] < -8 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
             gestureFlag1 = true
         }
         if( gestureFlag1!! && -3 < arrayAcceleration[0] && arrayAcceleration[0] < 3 &&  arrayAcceleration[1] > -6 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
