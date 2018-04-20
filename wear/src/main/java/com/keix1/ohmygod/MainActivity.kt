@@ -28,6 +28,7 @@ class MainActivity : WearableActivity(), SensorEventListener {
     private var gestureFlag1: Boolean? = null
     private var gestureFlag2: Boolean? = null
     private var gestureFlag3: Boolean? = null
+    lateinit var mp: MediaPlayer
 
 
     val sensorManager: SensorManager by lazy {
@@ -57,11 +58,7 @@ class MainActivity : WearableActivity(), SensorEventListener {
         var pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         lock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My tag")
         lock.acquire()
-        var mp = MediaPlayer.create(this, R.raw.mikami)
-
-        thread {
-            gesture(mp)
-        }
+        mp = MediaPlayer.create(this, R.raw.mikami)
 
 
 
@@ -73,28 +70,26 @@ class MainActivity : WearableActivity(), SensorEventListener {
 
     }
 
-    private fun gesture(mp: MediaPlayer) {
-        while(true) {
-            if(arrayAcceleration[0] < -7 && -12 < arrayAcceleration[1] && arrayAcceleration[1] < -8 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
-                gestureFlag1 = true
-            }
-            if( gestureFlag1!! && -3 < arrayAcceleration[0] && arrayAcceleration[0] < 3 &&  arrayAcceleration[1] > -6 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
-                gestureFlag2 = true
-            }
-            if(gestureFlag1!! && gestureFlag2!!) {
-                if(arrayAcceleration[1] > 7) {
-                    gestureFlag1 = false
-                    gestureFlag2 = false
-                    if(mp.isPlaying()) {
-                        mp.stop()
-                        try {
-                            mp.prepare()
-                        } catch(e : Exception) {
+    private fun gesture() {
+        if(arrayAcceleration[0] < -7 && -12 < arrayAcceleration[1] && arrayAcceleration[1] < -8 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
+            gestureFlag1 = true
+        }
+        if( gestureFlag1!! && -3 < arrayAcceleration[0] && arrayAcceleration[0] < 3 &&  arrayAcceleration[1] > -6 && -5 < arrayAcceleration[2] && arrayAcceleration[2] < 5) {
+            gestureFlag2 = true
+        }
+        if(gestureFlag1!! && gestureFlag2!!) {
+            if(arrayAcceleration[1] > 7) {
+                gestureFlag1 = false
+                gestureFlag2 = false
+                if(mp.isPlaying()) {
+                    mp.stop()
+                    try {
+                        mp.prepare()
+                    } catch(e : Exception) {
 
-                        }
-                    } else {
-                        mp.start()
                     }
+                } else {
+                    mp.start()
                 }
             }
         }
@@ -122,9 +117,11 @@ class MainActivity : WearableActivity(), SensorEventListener {
         textView.text = event!!.values.zip("XYZ".toList()).fold("") { acc, pair ->
             "$acc${pair.second}: ${pair.first}\n"
         }
-        arrayAcceleration[0] = event!!.values[0]
-        arrayAcceleration[1] = event!!.values[1]
-        arrayAcceleration[2] = event!!.values[2]
+        arrayAcceleration[0] = event.values[0]
+        arrayAcceleration[1] = event.values[1]
+        arrayAcceleration[2] = event.values[2]
+
+        gesture()
     }
 
 }
