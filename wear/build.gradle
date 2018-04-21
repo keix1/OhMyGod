@@ -12,8 +12,8 @@ android {
         applicationId "com.keix1.ohmygod"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 6
+        versionName "6.0"
     }
     buildTypes {
         release {
